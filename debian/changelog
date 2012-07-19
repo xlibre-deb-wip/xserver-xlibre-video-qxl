@@ -4,6 +4,21 @@ xserver-xorg-video-qxl (0.0.18~gitde66207-1) UNRELEASED; urgency=low
 
  -- Maarten Lankhorst <maarten.lankhorst@canonical.com>  Thu, 19 Jul 2012 11:25:04 +0200
 
+xserver-xorg-video-qxl (0.0.17-2ubuntu2) quantal; urgency=low
+
+  * No-change rebuild for the new xserver-video-abi-12.
+
+ -- Adam Conrad <adconrad@ubuntu.com>  Tue, 26 Jun 2012 02:08:08 -0600
+
+xserver-xorg-video-qxl (0.0.17-2ubuntu1) quantal; urgency=low
+
+  * Remove xserver-xspice for amd64 which is dependent on the universe package
+    libspice-server-dev. xserver-xspice was not provided in Precise, so
+    its not likely to be missed in Quantal. It will require an MIR for
+    spice to do so.
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Thu, 21 Jun 2012 10:07:19 -0400
+
 xserver-xorg-video-qxl (0.0.17-2) unstable; urgency=low
 
   * Enable Xspice (Closes: 668537)
