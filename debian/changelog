@@ -1,3 +1,11 @@
+xserver-xorg-video-qxl (0.0.18~gitde66207-0ubuntu1) quantal-proposed; urgency=low
+
+  * Merge from unreleased debian git, remaining changes:
+    - Remove xserver-xspice for amd64 which is dependent on the universe
+      package libspice-server-dev.
+
+ -- Timo Aaltonen <tjaalton@ubuntu.com>  Thu, 02 Aug 2012 00:13:34 +0300
+
 xserver-xorg-video-qxl (0.0.18~gitde66207-1) UNRELEASED; urgency=low
 
   * New upstream release.
