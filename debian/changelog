@@ -1,53 +1,29 @@
-xserver-xorg-video-qxl (0.1.0-0ubuntu3.1) raring; urgency=low
+xserver-xorg-video-qxl (0.1.1-1) UNRELEASED; urgency=low
 
-  * remove-mibstore.diff: Remove mibstore.h.
+  * New upstream release.
 
- -- Timo Aaltonen <tjaalton@ubuntu.com>  Fri, 08 Feb 2013 14:05:24 +0200
+ -- Michele Cane <michele.cane@gmail.com>  Mon, 21 Oct 2013 22:07:36 +0200
 
-xserver-xorg-video-qxl (0.1.0-0ubuntu2) raring; urgency=low
+xserver-xorg-video-qxl (0.1.0-2) unstable; urgency=low
 
-  * Rebuild to pick up new Xserver dependencies.
+  * Upload to unstable
+  * Bump Standards-Version to 3.9.4 (no changes)
+  * Enalbe Xspice in i386 (Closes: 689394)
 
- -- Timo Aaltonen <tjaalton@eldon>  Fri, 08 Feb 2013 11:59:06 +0200
+ -- Liang Guo <guoliang@debian.org>  Fri, 17 May 2013 07:19:32 +0800
 
-xserver-xorg-video-qxl (0.1.0-0ubuntu1) quantal; urgency=low
-
-  * Merge from unreleased debian git. (LP: #1056381)
-
- -- Timo Aaltonen <tjaalton@ubuntu.com>  Tue, 02 Oct 2012 00:20:35 +0300
-
-xserver-xorg-video-qxl (0.1.0-1) UNRELEASED; urgency=low
+xserver-xorg-video-qxl (0.1.0-1) experimental; urgency=low
 
   [ Maarten Lankhorst ]
   * New upstream release.
 
   [ Timo Aaltonen ]
   * control: Bump build-dep on libspice-protocol-dev to >= 0.12.2~.
+  
+  [ Liang Guo ]
+  * Ignore automatically generated files when build packages.
 
- -- Maarten Lankhorst <maarten.lankhorst@canonical.com>  Thu, 19 Jul 2012 11:25:04 +0200
-
-xserver-xorg-video-qxl (0.0.18~gitde66207-0ubuntu1) quantal-proposed; urgency=low
-
-  * Merge from unreleased debian git, remaining changes:
-    - Remove xserver-xspice for amd64 which is dependent on the universe
-      package libspice-server-dev.
-
- -- Timo Aaltonen <tjaalton@ubuntu.com>  Thu, 02 Aug 2012 00:13:34 +0300
-
-xserver-xorg-video-qxl (0.0.17-2ubuntu2) quantal; urgency=low
-
-  * No-change rebuild for the new xserver-video-abi-12.
-
- -- Adam Conrad <adconrad@ubuntu.com>  Tue, 26 Jun 2012 02:08:08 -0600
-
-xserver-xorg-video-qxl (0.0.17-2ubuntu1) quantal; urgency=low
-
-  * Remove xserver-xspice for amd64 which is dependent on the universe package
-    libspice-server-dev. xserver-xspice was not provided in Precise, so
-    its not likely to be missed in Quantal. It will require an MIR for
-    spice to do so.
-
- -- Tim Gardner <tim.gardner@canonical.com>  Thu, 21 Jun 2012 10:07:19 -0400
+ -- Liang Guo <guoliang@debian.org>  Tue, 22 Jan 2013 23:36:17 +0800
 
 xserver-xorg-video-qxl (0.0.17-2) unstable; urgency=low
 
