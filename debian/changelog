@@ -1,3 +1,11 @@
+xserver-xorg-video-qxl (0.1.1-0ubuntu1) trusty; urgency=low
+
+  * Sync from unreleased debian git.
+  * Drop remove-mibstore.diff, upstream.
+  * Enable xserver-spice again, the server is in main now.
+
+ -- Timo Aaltonen <tjaalton@ubuntu.com>  Tue, 29 Oct 2013 17:26:46 +0200
+
 xserver-xorg-video-qxl (0.1.1-1) UNRELEASED; urgency=low
 
   * New upstream release.

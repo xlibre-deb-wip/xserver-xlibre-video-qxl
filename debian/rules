@@ -20,10 +20,10 @@ override_dh_install:
 override_dh_shlibdeps:
 	dh_shlibdeps -- --warnings=6
 
-# Disable Xspice support
+# Enable Xspice support 
 override_dh_auto_configure:
 ifeq ($(DEB_HOST_GNU_TYPE), x86_64-linux-gnu)
-	dh_auto_configure -- --disable-xspice
+	dh_auto_configure -- --enable-xspice 
 else
 ifeq ($(DEB_HOST_GNU_TYPE), i486-linux-gnu)
 	dh_auto_configure -- --enable-xspice 
