@@ -1,0 +1,20 @@
+commit 819b1f62efbecf33db7bb0b4402a798262ae4574
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Wed Jan 9 22:55:47 2013 -0500
+
+    Remove mibstore.h
+    
+    Signed-off-by: Adam Jackson <ajax@redhat.com>
+
+diff --git a/src/uxa/uxa-priv.h b/src/uxa/uxa-priv.h
+index ad83963..e3c581c 100644
+--- a/src/uxa/uxa-priv.h
++++ b/src/uxa/uxa-priv.h
+@@ -45,7 +45,6 @@
+ #include "pixmapstr.h"
+ #include "windowstr.h"
+ #include "servermd.h"
+-#include "mibstore.h"
+ #include "colormapst.h"
+ #include "gcstruct.h"
+ #include "input.h"

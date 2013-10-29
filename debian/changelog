@@ -1,3 +1,15 @@
+xserver-xorg-video-qxl (0.1.0-0ubuntu3.1) raring; urgency=low
+
+  * remove-mibstore.diff: Remove mibstore.h.
+
+ -- Timo Aaltonen <tjaalton@ubuntu.com>  Fri, 08 Feb 2013 14:05:24 +0200
+
+xserver-xorg-video-qxl (0.1.0-0ubuntu2) raring; urgency=low
+
+  * Rebuild to pick up new Xserver dependencies.
+
+ -- Timo Aaltonen <tjaalton@eldon>  Fri, 08 Feb 2013 11:59:06 +0200
+
 xserver-xorg-video-qxl (0.1.0-0ubuntu1) quantal; urgency=low
 
   * Merge from unreleased debian git. (LP: #1056381)
