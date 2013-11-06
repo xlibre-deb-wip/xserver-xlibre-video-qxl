@@ -153,6 +153,10 @@ fi
 AM_CONDITIONAL(LIBUDEV, test x$LIBUDEV = xyes)
 
 PKG_CHECK_MODULES([SPICE_PROTOCOL], [spice-protocol >= 0.12.0])
+PKG_CHECK_MODULES(XEXT, [xextproto >= 7.0.99.1],
+		HAVE_XEXTPROTO_71="yes"; AC_DEFINE(HAVE_XEXTPROTO_71, 1, [xextproto 7.1 available]),
+		HAVE_XEXTPROTO_71="no")
+AM_CONDITIONAL(HAVE_XEXTPROTO_71, [ test "$HAVE_XEXTPROTO_71" = "yes" ])
 
 # AC_CHECK_FILE is not supported when cross compiling
 if test "$cross_compiling" = "no" ; then
