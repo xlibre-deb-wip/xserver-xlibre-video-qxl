@@ -26,12 +26,15 @@ import signal
 from subprocess import Popen, PIPE
 
 def which(x):
+    if not x:
+        return x
     if os.path.exists(x):
         return x
     for p in os.environ['PATH'].split(':'):
         candidate = os.path.join(p, x)
         if os.path.exists(candidate):
             return candidate
+    print 'Warning: failed to find executable %s' % x
     return None
 
 if 'XSPICE_ENABLE_GDB' in os.environ:
@@ -85,13 +88,15 @@ parser.add_argument('--streaming-video', choices=['off', 'all', 'filter'],
                     default='filter', help='filter by default')
 add_boolean('--ipv4-only')
 add_boolean('--ipv6-only')
-parser.add_argument('--vdagent', action='store_true', dest='vdagent_enabled', default=False, help='launch vdagent & vdagentd')
-parser.add_argument('--vdagent-virtio-path', default='/tmp/xspice-virtio', help='virtio socket path')
-parser.add_argument('--vdagent-uinput-path', default='/tmp/xspice-uinput', help='uinput socket path')
-parser.add_argument('--vdagentd-exec', default='spice-vdagentd')
-parser.add_argument('--vdagent-exec', default='spice-vdagent')
-parser.add_argument('--vdagent-no-launch', default=True, action='store_false', dest='vdagent_launch')
-parser.add_argument('--audio-fifo-dir', default='')
+parser.add_argument('--vdagent', action='store_true', dest='vdagent_enabled', default=False, help='launch vdagent & vdagentd. They provide clipboard & resolution automation')
+parser.add_argument('--vdagent-virtio-path', default='/tmp/xspice-virtio', help='virtio socket path used by vdagentd')
+parser.add_argument('--vdagent-uinput-path', default='/tmp/xspice-uinput', help='uinput socket path used by vdagent')
+parser.add_argument('--vdagentd-exec', help='path to spice-vdagentd (used with --vdagent)')
+parser.add_argument('--vdagent-exec', help='path to spice-vdagent (used with --vdagent)')
+parser.add_argument('--vdagent-no-launch', default=True, action='store_false', dest='vdagent_launch', help='do not launch vdagent & vdagentd, used for debugging or if some external script wants to take care of that')
+parser.add_argument('--vdagent-uid', default=str(os.getuid()), help='set vdagent user id. changing it makes sense only in conjunction with --vdagent-no-launch')
+parser.add_argument('--vdagent-gid', default=str(os.getgid()), help='set vdagent group id. changing it makes sense only in conjunction with --vdagent-no-launch')
+parser.add_argument('--audio-fifo-dir', default='', help="set fifo directory for playback audio. designed to work with PulseAudio's module-pipe-sink")
 
 #TODO
 #Option "SpiceAddr" ""
@@ -109,14 +114,24 @@ if cgdb:
 args, xorg_args = parser.parse_known_args(sys.argv[1:])
 
 def agents_new_enough(args):
-    if not os.path.exists(args.vdagent_exec) or not os.path.exists(args.vdagentd_exec):
-        return False
+    for f in [args.vdagent_exec, args.vdagentd_exec]:
+        if not f:
+            print 'please specify path to vdagent/vdagentd executables'
+            return False
+        if not os.path.exists(f):
+            print 'error: file not found ', f
+            return False
+
     for f in [args.vdagent_exec, args.vdagentd_exec]:
         if Popen(args=[f, '-h'], stdout=PIPE).stdout.read().find('-S') == -1:
             return False
     return True
 
 if args.vdagent_enabled:
+    if not args.vdagent_exec:
+        args.vdagent_exec = 'spice-vdagent'
+    if not args.vdagentd_exec:
+        args.vdagentd_exec = 'spice-vdagentd'
     args.vdagent_exec = which(args.vdagent_exec)
     args.vdagentd_exec = which(args.vdagentd_exec)
     if not agents_new_enough(args):
@@ -157,12 +172,18 @@ cleanup_processes = []
 
 def cleanup(*args):
     for f in cleanup_files:
-        if os.path.isfile(f):
+        if os.path.exists(f):
             os.remove(f)
     for p in cleanup_processes:
-        p.kill()
+        try:
+            p.kill()
+        except OSError:
+            pass
     for p in cleanup_processes:
-        p.wait()
+        try:
+            p.wait()
+        except OSError:
+            pass
     del cleanup_processes[:]
 
 def launch(*args, **kw):
@@ -231,7 +252,8 @@ var_args = ['port', 'tls_port', 'disable_ticketing',
     'tls_ciphers', 'dh_file', 'password', 'image_compression',
     'jpeg_wan_compression', 'zlib_glz_wan_compression',
     'streaming_video', 'deferred_fps', 'exit_on_disconnect',
-    'vdagent_enabled', 'vdagent_virtio_path', 'vdagent_uinput_path']
+    'vdagent_enabled', 'vdagent_virtio_path', 'vdagent_uinput_path',
+    'vdagent_uid', 'vdagent_gid']
 
 for arg in var_args:
     if getattr(args, arg):
@@ -269,6 +291,8 @@ if args.vdagent_enabled:
     for f in [vdagentd_uds, args.vdagent_virtio_path, args.vdagent_uinput_path]:
         if os.path.exists(f):
             os.unlink(f)
+    cleanup_files.extend([args.vdagent_virtio_path, args.vdagent_uinput_path])
+
 xorg = launch(executable=args.xorg, args=exec_args + xorg_args)
 time.sleep(2)
 
@@ -278,7 +302,7 @@ if retpid != 0:
 else:
     if args.vdagent_enabled and args.vdagent_launch:
         # XXX use systemd --user for this?
-        vdagentd = launch(args=[args.vdagentd_exec, '-x', '-S', vdagentd_uds,
+        vdagentd = launch(args=[args.vdagentd_exec, '-f', '-x', '-S', vdagentd_uds,
                           '-s', args.vdagent_virtio_path, '-u', args.vdagent_uinput_path])
         time.sleep(1)
         # TODO wait for uinput pipe open for write

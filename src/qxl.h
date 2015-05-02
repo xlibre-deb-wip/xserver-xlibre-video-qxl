@@ -50,6 +50,9 @@
 #ifdef XSERVER_PCIACCESS
 #include "pciaccess.h"
 #endif
+#ifdef XSERVER_PLATFORM_BUS
+#include "xf86platformBus.h"
+#endif
 #include "fb.h"
 #include "vgaHW.h"
 #endif /* XSPICE */
@@ -65,6 +68,8 @@ typedef struct list xorg_list_t;
 #else
 typedef struct xorg_list xorg_list_t;
 #endif
+
+struct xf86_platform_device;
 
 #include "compat-api.h"
 #define hidden _X_HIDDEN
@@ -147,6 +152,12 @@ enum {
     OPTION_SPICE_VDAGENT_ENABLED,
     OPTION_SPICE_VDAGENT_VIRTIO_PATH,
     OPTION_SPICE_VDAGENT_UINPUT_PATH,
+    OPTION_SPICE_VDAGENT_UID,
+    OPTION_SPICE_VDAGENT_GID,
+    OPTION_FRAME_BUFFER_SIZE,
+    OPTION_SURFACE_BUFFER_SIZE,
+    OPTION_COMMAND_BUFFER_SIZE,
+    OPTION_SPICE_SMARTCARD_FILE,
 #endif
     OPTION_COUNT,
 };
@@ -269,6 +280,7 @@ struct _qxl_screen_t
     pciVideoPtr			pci;
     PCITAG			pci_tag;
 #endif
+    struct xf86_platform_device *platform_dev;
     vgaRegRec                   vgaRegs;
 #endif /* XSPICE */
 
@@ -323,8 +335,6 @@ struct _qxl_screen_t
     /* XSpice specific, dragged from the Device */
     QXLReleaseInfo     *last_release;
 
-    pthread_t audio_thread;
-
     uint32_t           cmdflags;
     uint32_t           oom_running;
     uint32_t           num_free_res; /* is having a release ring effective
@@ -342,6 +352,8 @@ struct _qxl_screen_t
     } guest_primary;
 
     char playback_fifo_dir[PATH_MAX];
+    void *playback_opaque;
+    char smartcard_file[PATH_MAX];
 #endif /* XSPICE */
 
     uint32_t deferred_fps;
@@ -559,8 +571,6 @@ struct qxl_bo *qxl_image_create     (qxl_screen_t           *qxl,
 				       Bool		       fallback);
 void              qxl_image_destroy    (qxl_screen_t           *qxl,
 				        struct qxl_bo *bo);
-void		  qxl_drop_image_cache (qxl_screen_t	       *qxl);
-
 
 /*
  * Malloc
