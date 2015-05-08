@@ -2,6 +2,8 @@ xserver-xorg-video-qxl (0.1.4-1) UNRELEASED; urgency=medium
 
   * Let uscan verify tarball signatures.
   * New upstream release.
+  * Add patch from rhbz#1201877 to use libpciaccess instead of raw port I/O,
+    fixing FTBFS on arm64.  Thanks, Adam Jackson!
 
  -- Julien Cristau <jcristau@debian.org>  Fri, 08 May 2015 19:18:24 +0200
 
