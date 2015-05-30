@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 DEB_HOST_GNU_TYPE := $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+VIDEODEP = $(shell cat /usr/share/xserver-xorg/videodrvdep 2>/dev/null)
 
 override_dh_auto_build:
 	dh_auto_build -- V=1
@@ -23,6 +24,10 @@ override_dh_install:
 # That's a plugin, use appropriate warning level:
 override_dh_shlibdeps:
 	dh_shlibdeps -- --warnings=6
+
+override_dh_xsf_substvars:
+	echo "xviddriver:Depends=$(VIDEODEP)" >> debian/xserver-xspice.substvars
+	dh_xsf_substvars
 
 # Enable Xspice support
 override_dh_auto_configure:

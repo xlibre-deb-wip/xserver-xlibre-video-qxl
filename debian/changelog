@@ -1,3 +1,17 @@
+xserver-xorg-video-qxl (0.1.4-3) unstable; urgency=medium
+
+  * Team upload.
+  * debian/control:
+    - xserver-xspice: Drop dependency against xserver-xorg-video-qxl, this
+      is not needed anymore now that spiceqxl_drv.so is not shipped in that
+      package.
+    - xserver-xspice: Add ${xviddriver:Depends} to the dependencies to ensure
+      that we have the proper ABI.
+  * debian/rules: Generate the "xviddriver:Depends" substvars for the
+    xserver-xspice package.
+
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 30 May 2015 15:06:37 +0200
+
 xserver-xorg-video-qxl (0.1.4-2) unstable; urgency=medium
 
   * Team upload.

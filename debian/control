@@ -55,7 +55,7 @@ Description: X.Org X server -- QXL display driver (debugging symbols)
 
 Package: xserver-xspice
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, xserver-xorg, xserver-xorg-video-qxl (>= 0.0.17-2), python-argparse
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, xserver-xorg, ${xviddriver:Depends}, python-argparse
 Breaks: xserver-xorg-video-qxl (<< 0.1.4-2~)
 Replaces: xserver-xorg-video-qxl (<< 0.1.4-2~)
 Description: Xspice X server
