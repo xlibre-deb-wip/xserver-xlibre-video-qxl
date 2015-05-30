@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+DEB_HOST_GNU_TYPE := $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+
 override_dh_auto_build:
 	dh_auto_build -- V=1
 
@@ -14,11 +16,21 @@ override_dh_auto_install:
 # Kill *.la files, and forget no-one:
 override_dh_install:
 	find debian/tmp -name '*.la' -delete
+	-rm -r debian/tmp/usr/share
+	install -D -m 644 -o root -g root ./examples/spiceqxl.xorg.conf.example debian/tmp/etc/X11/spiceqxl.xorg.conf
 	dh_install --fail-missing
 
 # That's a plugin, use appropriate warning level:
 override_dh_shlibdeps:
 	dh_shlibdeps -- --warnings=6
 
+# Enable Xspice support
+override_dh_auto_configure:
+ifeq ($(DEB_HOST_GNU_TYPE), x86_64-linux-gnu)
+	dh_auto_configure -- --libdir=/usr/lib --enable-xspice
+else
+	dh_auto_configure -- --libdir=/usr/lib
+endif
+
 %:
-	dh $@ --with quilt,autoreconf,xsf --builddirectory=build/
+	dh $@ --with quilt,autoreconf,xsf,python2 --builddirectory=build/
