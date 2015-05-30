@@ -9,8 +9,10 @@ xserver-xorg-video-qxl (0.1.4-3) unstable; urgency=medium
       that we have the proper ABI.
   * debian/rules: Generate the "xviddriver:Depends" substvars for the
     xserver-xspice package.
+  * debian/control: Add libudev-dev to the build-dependency for the linux
+    architectures
 
- -- Laurent Bigonville <bigon@debian.org>  Sat, 30 May 2015 15:06:37 +0200
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 30 May 2015 16:02:55 +0200
 
 xserver-xorg-video-qxl (0.1.4-2) unstable; urgency=medium
 
