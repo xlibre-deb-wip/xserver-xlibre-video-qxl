@@ -1,8 +1,9 @@
 xserver-xorg-video-qxl (0.1.4-2) UNRELEASED; urgency=medium
 
   * Renable Xspice
+  * Bump debhelper compatibility to 9
 
- -- Laurent Bigonville <bigon@debian.org>  Sat, 30 May 2015 12:49:45 +0200
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 30 May 2015 12:51:56 +0200
 
 xserver-xorg-video-qxl (0.1.4-1) unstable; urgency=medium
 
