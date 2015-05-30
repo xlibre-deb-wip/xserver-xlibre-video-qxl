@@ -24,8 +24,8 @@ Build-Depends:
  python,
 Standards-Version: 3.9.6
 Homepage: http://spice-space.org/
-Vcs-Git: git://git.debian.org/git/pkg-xorg/driver/xserver-xorg-video-qxl
-Vcs-Browser: http://git.debian.org/?p=pkg-xorg/driver/xserver-xorg-video-qxl.git
+Vcs-Git: git://anonscm.debian.org/pkg-xorg/driver/xserver-xorg-video-qxl
+Vcs-Browser: https://anonscm.debian.org/cgit/pkg-xorg/driver/xserver-xorg-video-qxl.git
 
 Package: xserver-xorg-video-qxl
 Architecture: any
