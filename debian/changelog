@@ -1,3 +1,10 @@
+xserver-xorg-video-qxl (0.1.4-4) UNRELEASED; urgency=medium
+
+  * debian/control: Fix wording in xserver-xspice description (Closes:
+    #799379)
+
+ -- Laurent Bigonville <bigon@debian.org>  Fri, 06 Nov 2015 23:49:42 +0100
+
 xserver-xorg-video-qxl (0.1.4-3) unstable; urgency=medium
 
   * Team upload.
