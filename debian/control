@@ -23,7 +23,7 @@ Build-Depends:
  libspice-protocol-dev (>= 0.12.2~),
  libspice-server-dev [amd64],
  python,
-Standards-Version: 3.9.6
+Standards-Version: 3.9.8
 Homepage: https://www.spice-space.org/
 Vcs-Git: https://anonscm.debian.org/git/pkg-xorg/driver/xserver-xorg-video-qxl.git
 Vcs-Browser: https://anonscm.debian.org/cgit/pkg-xorg/driver/xserver-xorg-video-qxl.git

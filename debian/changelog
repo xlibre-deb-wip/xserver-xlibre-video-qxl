@@ -4,11 +4,12 @@ xserver-xorg-video-qxl (0.1.4+20161126git4d7160c-1) UNRELEASED; urgency=medium
   * New git snapshot (4d7160c) (Closes: #845741)
   * debian/control: Fix wording in xserver-xspice description (Closes:
     #799379)
+  * debian/control: Bump Standards-Version to 3.9.8, no further changes
 
   [ Andreas Boll ]
   * Update a bunch of URLs in packaging to https.
 
- -- Laurent Bigonville <bigon@debian.org>  Sat, 26 Nov 2016 13:38:58 +0100
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 26 Nov 2016 13:39:32 +0100
 
 xserver-xorg-video-qxl (0.1.4-3) unstable; urgency=medium
 
