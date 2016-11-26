@@ -6,11 +6,12 @@ xserver-xorg-video-qxl (0.1.4+20161126git4d7160c-1) UNRELEASED; urgency=medium
   * debian/control: Fix wording in xserver-xspice description (Closes:
     #799379)
   * debian/control: Bump Standards-Version to 3.9.8, no further changes
+  * debian/control: Add dh-python to the build-dependencies
 
   [ Andreas Boll ]
   * Update a bunch of URLs in packaging to https.
 
- -- Laurent Bigonville <bigon@debian.org>  Sat, 26 Nov 2016 13:56:28 +0100
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 26 Nov 2016 14:21:54 +0100
 
 xserver-xorg-video-qxl (0.1.4-3) unstable; urgency=medium
 

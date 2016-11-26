@@ -6,6 +6,7 @@ Build-Depends:
  debhelper (>= 9),
  pkg-config,
  dh-autoreconf,
+ dh-python,
  xserver-xorg-dev (>= 2:1.9.4),
  x11proto-core-dev,
  x11proto-fonts-dev,
