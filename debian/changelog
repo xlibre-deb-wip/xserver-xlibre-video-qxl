@@ -12,11 +12,14 @@ xserver-xorg-video-qxl (0.1.4+20161126git4d7160c-1) UNRELEASED; urgency=medium
   * Drop debian/patches/xextproto.diff and build-depend against libxext-dev
     instead
   * Disable Xspice again, it's not working with XOrg 1.19 release
+  * debian/patches/qxl-kms-disable-composite.patch,
+    debian/patches/no-surfaces-kms.patch: Fix performance issues/crashes and
+    fix graphical glitches by disabling COMPOSITE extension. (Closes: #801081)
 
   [ Andreas Boll ]
   * Update a bunch of URLs in packaging to https.
 
- -- Laurent Bigonville <bigon@debian.org>  Sat, 26 Nov 2016 16:33:45 +0100
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 26 Nov 2016 16:50:19 +0100
 
 xserver-xorg-video-qxl (0.1.4-3) unstable; urgency=medium
 
