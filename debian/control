@@ -23,6 +23,7 @@ Build-Depends:
  libudev-dev [linux-any],
  libspice-protocol-dev (>= 0.12.2~),
  libspice-server-dev [amd64],
+ libxfont-dev,
  python,
 Standards-Version: 3.9.8
 Homepage: https://www.spice-space.org/
