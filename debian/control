@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
 Build-Depends:
- debhelper (>= 9),
+ debhelper (>= 9.20160114~),
  pkg-config,
  dh-autoreconf,
  dh-python,
@@ -43,18 +43,6 @@ Description: X.Org X server -- QXL display driver
  <URL:https://www.X.org>
  .
  This package is built from the X.org xf86-video-qxl driver module.
-
-Package: xserver-xorg-video-qxl-dbg
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, xserver-xorg-video-qxl (= ${binary:Version})
-Section: debug
-Priority: extra
-Description: X.Org X server -- QXL display driver (debugging symbols)
- This package provides the driver for QXL video device, i.e. if Linux is 
- running inside a RedHat Enterprise Virtualization (RHEV) environment, or
- other SPICE-compatible KVM/Qemu emulator. 
- .
- This package contains the debugging symbols for this driver.
 
 Package: xserver-xspice
 Architecture: amd64
