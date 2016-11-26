@@ -84,8 +84,11 @@ make_drawable (qxl_screen_t *qxl, qxl_surface_t *surf, uint8_t type,
     if (rect)
 	drawable->bbox = *rect;
     
+    /* No longer needed since spice-server commit c541d7e29 */
     if (!qxl->kms_enabled)
         drawable->mm_time = qxl->rom->mm_clock;
+    else
+        drawable->mm_time = 0;
 
     qxl->bo_funcs->bo_unmap(draw_bo);
     return draw_bo;

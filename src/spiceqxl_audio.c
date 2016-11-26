@@ -46,6 +46,7 @@
        and feed ahead into the Spice server (up to FEED_BUFFER_PERIODS).
 */
 
+#define IDLE_MS              300
 #define PERIOD_MS            10
 #define READ_BUFFER_PERIODS  2
 #define FEED_BUFFER_PERIODS  8
@@ -63,14 +64,16 @@ struct fifo_data {
 
 struct audio_data {
     struct fifo_data fifos[MAX_FIFOS];
+    int active;
     uint32_t *spice_buffer;
     int spice_buffer_bytes;
     int period_bytes;
     struct timeval fed_through_time;
     int remainder;
     int fifo_count;
+    int closed_fifos;
     SpiceTimer *wall_timer;
-    int wall_timer_live;
+    int wall_timer_type;
     int dir_watch;
     int fifo_dir_watch;
     SpiceWatch *fifo_dir_qxl_watch;
@@ -108,14 +111,18 @@ static inline void fifo_remove_data(struct fifo_data *f, unsigned char *dest, in
     int remain = f->size - remove_from;
 
     if (remain < len) {
-        memcpy(dest, f->buffer + remove_from, remain);
-        dest += remain;
+        if (dest) {
+            memcpy(dest, f->buffer + remove_from, remain);
+            dest += remain;
+        }
         len -= remain;
         f->len -= remain;
         remove_from = 0;
     }
 
-    memcpy(dest, f->buffer + remove_from, len);
+    if (dest) {
+        memcpy(dest, f->buffer + remove_from, len);
+    }
     f->len -= len;
 }
 
@@ -146,13 +153,16 @@ static void mix_in_one_fifo(struct fifo_data *f, int16_t *out, int len)
     free(in);
 }
 
+/* a helper for process_fifos() */
 static void mix_in_fifos(qxl_screen_t *qxl)
 {
     int i;
     struct audio_data *data = qxl->playback_opaque;
     struct fifo_data *f;
 
-    memset(data->spice_buffer, 0, data->spice_buffer_bytes);
+    if (data->spice_buffer) {
+        memset(data->spice_buffer, 0, data->spice_buffer_bytes);
+    }
 
     if (data->fifo_count == 0)
         return;
@@ -164,11 +174,17 @@ static void mix_in_fifos(qxl_screen_t *qxl)
     /* Extra fifos need to be mixed in */
     for (i = 1; i < data->fifo_count; i++) {
         f = &data->fifos[i];
-        if (f->len > 0)
-            mix_in_one_fifo(f, (int16_t *) data->spice_buffer, data->spice_buffer_bytes);
+        if (f->len > 0) {
+            if (data->spice_buffer) {
+                mix_in_one_fifo(f, (int16_t *) data->spice_buffer, data->spice_buffer_bytes);
+            } else {
+                fifo_remove_data(f, NULL, min(data->spice_buffer_bytes, f->len));
+            }
+        }
     }
 }
 
+/* a helper for process_fifos() */
 static int can_feed(struct audio_data *data)
 {
     struct timeval end, diff;
@@ -190,6 +206,7 @@ static int can_feed(struct audio_data *data)
     return 0;
 }
 
+/* a helper for process_fifos() */
 static void did_feed(struct audio_data *data, int len)
 {
     struct timeval diff;
@@ -204,59 +221,70 @@ static void did_feed(struct audio_data *data, int len)
     timeradd(&data->fed_through_time, &diff, &data->fed_through_time);
 }
 
-static void condense_fifos(struct audio_data *data)
-{
-    int i;
-    struct fifo_data tmp;
-
-    for (i = 0; i < data->fifo_count; i++) {
-        struct fifo_data *f = &data->fifos[i];
-        if (f->fd == -1 && f->len == 0) {
-            if ((i + 1) < data->fifo_count) {
-                tmp = *f;
-                *f = data->fifos[data->fifo_count - 1];
-                data->fifos[data->fifo_count - 1] = tmp;
-            }
-            data->fifo_count--;
-            i--;
-        }
-    }
-}
-
-static void watch_or_wait(qxl_screen_t *qxl);
-static void process_fifos(qxl_screen_t *qxl, struct audio_data *data, int maxlen)
+static int process_fifos(qxl_screen_t *qxl, struct audio_data *data, int maxlen)
 {
     while (maxlen > 0) {
         if (! data->spice_buffer) {
             uint32_t chunk_frames;
             spice_server_playback_get_buffer(&qxl->playback_sin, &data->spice_buffer, &chunk_frames);
-            data->spice_buffer_bytes = chunk_frames * sizeof(int16_t) * SPICE_INTERFACE_PLAYBACK_CHAN;
+            data->spice_buffer_bytes = data->spice_buffer ?
+                chunk_frames * sizeof(int16_t) * SPICE_INTERFACE_PLAYBACK_CHAN :
+                data->period_bytes * READ_BUFFER_PERIODS;
         }
 
-        if (! data->spice_buffer)
-            break;
-
-        if (! can_feed(data))
-            break;
+        if (! can_feed(data)) {
+            return FALSE;
+        }
 
         mix_in_fifos(qxl);
 
         did_feed(data, data->spice_buffer_bytes);
         maxlen -= data->spice_buffer_bytes;
 
-        spice_server_playback_put_samples(&qxl->playback_sin, data->spice_buffer);
-        data->spice_buffer = NULL;
+        if (data->spice_buffer) {
+            spice_server_playback_put_samples(&qxl->playback_sin, data->spice_buffer);
+            data->spice_buffer = NULL;
+        }
     }
-
-    watch_or_wait(qxl);
+    return TRUE;
 }
 
+/* a helper for read_from_fifos() */
+static void condense_fifos(qxl_screen_t *qxl)
+{
+    struct audio_data *data = qxl->playback_opaque;
+    int i;
+
+    for (i = 0; i < data->fifo_count; i++) {
+        struct fifo_data *f = &data->fifos[i];
+        if (f->fd == -1 && f->len == 0) {
+            if ((i + 1) < data->fifo_count) {
+                struct fifo_data tmp = *f;
+                *f = data->fifos[data->fifo_count - 1];
+                data->fifos[data->fifo_count - 1] = tmp;
+            }
+            data->fifo_count--;
+            i--;
+            if (!--data->closed_fifos) {
+                break;
+            }
+        }
+    }
+}
+
+static void start_watching(qxl_screen_t *qxl);
 static void read_from_fifos(int fd, int event, void *opaque)
 {
     qxl_screen_t *qxl = opaque;
     struct audio_data *data = qxl->playback_opaque;
     int i;
     int maxlen = 0;
+
+    if (data->wall_timer_type) {
+        qxl->core->timer_cancel(data->wall_timer);
+        data->wall_timer_type = 0;
+    }
+
     for (i = 0; i < data->fifo_count; i++) {
         struct fifo_data *f = &data->fifos[i];
 
@@ -277,6 +305,10 @@ static void read_from_fifos(int fd, int event, void *opaque)
                 f->watch = NULL;
                 close(f->fd);
                 f->fd = -1;
+                /* Setting closed_fifos will only have an effect once
+                 * the closed fifo's buffer is empty.
+                 */
+                data->closed_fifos++;
             }
 
             if (f->size == f->len) {
@@ -290,9 +322,36 @@ static void read_from_fifos(int fd, int event, void *opaque)
             maxlen = f->len;
     }
 
-    process_fifos(qxl, data, maxlen);
+    if (data->closed_fifos) {
+        condense_fifos(qxl);
+    }
+
+    if (maxlen && !data->active) {
+        spice_server_playback_start(&qxl->playback_sin);
+        data->active = 1;
+    }
+
+    if (!process_fifos(qxl, data, maxlen)) {
+        /* There is still some fifo data to process */
+        qxl->core->timer_start(data->wall_timer, PERIOD_MS);
+        data->wall_timer_type = PERIOD_MS;
+
+    } else if (data->fifo_count) {
+        /* All the fifo data was processed. Wait for more */
+        start_watching(qxl);
+
+        /* But none may arrive so stop processing if that happens */
+        qxl->core->timer_start(data->wall_timer, IDLE_MS);
+        data->wall_timer_type = IDLE_MS;
+
+    } else if (data->active) {
+        /* There is no open fifo anymore */
+        spice_server_playback_stop(&qxl->playback_sin);
+        data->active = 0;
+    }
 }
 
+/* a helper for read_from_fifos() */
 static void start_watching(qxl_screen_t *qxl)
 {
     struct audio_data *data = qxl->playback_opaque;
@@ -307,34 +366,23 @@ static void start_watching(qxl_screen_t *qxl)
     }
 }
 
-static void watch_or_wait(qxl_screen_t *qxl)
-{
-    struct audio_data *data = qxl->playback_opaque;
-
-    if (! can_feed(data)) {
-        if (! data->wall_timer_live) {
-            qxl->core->timer_start(data->wall_timer, PERIOD_MS);
-            data->wall_timer_live++;
-        }
-    }
-    else {
-        start_watching(qxl);
-        if (data->wall_timer_live)
-            qxl->core->timer_cancel(data->wall_timer);
-        data->wall_timer_live = 0;
-    }
-}
-
+/* a helper for read_from_fifos() */
 static void wall_ticker(void *opaque)
 {
     qxl_screen_t *qxl = opaque;
     struct audio_data *data = qxl->playback_opaque;
 
-    data->wall_timer_live = 0;
-
-    condense_fifos(data);
-
-    read_from_fifos(-1, 0, qxl);
+    if (data->wall_timer_type == IDLE_MS) {
+        /* The audio is likely paused in the application(s) */
+        if (data->active) {
+            spice_server_playback_stop(&qxl->playback_sin);
+            data->active = 0;
+        }
+        data->wall_timer_type = 0;
+    } else {
+        data->wall_timer_type = 0;
+        read_from_fifos(-1, 0, qxl);
+    }
 }
 
 #if defined(HAVE_SYS_INOTIFY_H)
@@ -345,8 +393,6 @@ static void handle_one_change(qxl_screen_t *qxl, struct inotify_event *e)
         struct audio_data *data = qxl->playback_opaque;
         struct fifo_data *f;
         char *fname;
-
-        condense_fifos(data);
 
         f = &data->fifos[data->fifo_count];
 
@@ -440,8 +486,6 @@ static void audio_initialize (qxl_screen_t *qxl)
         data->fifos[i].size = data->period_bytes * READ_BUFFER_PERIODS;
         data->fifos[i].buffer = calloc(1, data->fifos[i].size);
     }
-
-    spice_server_playback_start(&qxl->playback_sin);
 }
 
 

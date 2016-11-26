@@ -171,7 +171,6 @@ static SpiceTimer* timer_add(SpiceTimerFunc func, void *opaque)
 {
     SpiceTimer *timer = calloc(sizeof(SpiceTimer), 1);
 
-    timer->xorg_timer = TimerSet(NULL, 0, 1e9 /* TODO: infinity? */, xorg_timer_callback, timer);
     timer->func = func;
     timer->opaque = opaque;
     return timer;
@@ -179,7 +178,8 @@ static SpiceTimer* timer_add(SpiceTimerFunc func, void *opaque)
 
 static void timer_start(SpiceTimer *timer, uint32_t ms)
 {
-    TimerSet(timer->xorg_timer, 0 /* flags */, ms, xorg_timer_callback, timer);
+    timer->xorg_timer = TimerSet(timer->xorg_timer, 0 /* flags */,
+                                 ms, xorg_timer_callback, timer);
 }
 
 static void timer_cancel(SpiceTimer *timer)
@@ -296,7 +296,7 @@ static void select_and_check_watches(void)
     watch = (SpiceWatch*)watches.next;
     timeout.tv_sec = timeout.tv_usec = 0;
     retval = select(max_fd + 1, &rfds, &wfds, NULL, &timeout);
-    if (retval) {
+    if (retval > 0) {
         RING_FOREACH_SAFE(link, next, &watches) {
             watch = (SpiceWatch*)link;
             if (!watch->remove && (watch->event_mask & SPICE_WATCH_EVENT_READ)

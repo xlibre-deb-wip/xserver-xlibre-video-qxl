@@ -98,9 +98,8 @@ const OptionInfoRec DefaultOptions[] =
       "SpiceX509Dir",             OPTV_STRING,    {0}, FALSE},
     { OPTION_SPICE_SASL,
       "SpiceSasl",                OPTV_BOOLEAN,   {0}, FALSE},
-    /* VVV qemu defaults to 1 - not implemented in xspice yet */
     { OPTION_SPICE_AGENT_MOUSE,
-      "SpiceAgentMouse",          OPTV_BOOLEAN,   {0}, FALSE},
+      "SpiceAgentMouse",          OPTV_BOOLEAN,   {0}, TRUE },
     { OPTION_SPICE_DISABLE_TICKETING,
       "SpiceDisableTicketing",    OPTV_BOOLEAN,   {0}, FALSE},
     { OPTION_SPICE_PASSWORD,
@@ -155,6 +154,8 @@ const OptionInfoRec DefaultOptions[] =
       "CommandBufferSize",        OPTV_INTEGER,    {DEFAULT_COMMAND_BUFFER_SIZE}, FALSE},
     { OPTION_SPICE_SMARTCARD_FILE,
       "SpiceSmartcardFile",       OPTV_STRING,    {0}, FALSE},
+    { OPTION_SPICE_VIDEO_CODECS,
+      "SpiceVideoCodecs",         OPTV_STRING,    {0}, FALSE},
 #endif
 
     { -1, NULL, OPTV_NONE, {0}, FALSE }
@@ -167,7 +168,6 @@ qxl_available_options (int chipid, int busid)
 }
 
 /* Having a single monitors config struct allocated on the device avoids any
- *
  * possible fragmentation. Since X is single threaded there is no danger
  * in us changing it between issuing the io and getting the interrupt to signal
  * spice-server is done reading it.
@@ -220,6 +220,8 @@ unmap_memory_helper (qxl_screen_t *qxl)
 	pci_device_unmap_range (qxl->pci, qxl->vram, qxl->pci->regions[1].size);
     if (qxl->rom)
 	pci_device_unmap_range (qxl->pci, qxl->rom, qxl->pci->regions[2].size);
+    if (qxl->io)
+	pci_device_close_io (qxl->pci, qxl->io);
 #else
     if (qxl->ram)
 	xf86UnMapVidMem (scrnIndex, qxl->ram, (1 << qxl->pci->size[0]));
@@ -252,6 +254,9 @@ map_memory_helper (qxl_screen_t *qxl)
                           qxl->pci->regions[2].size, 0,
                           (void **)&qxl->rom);
     
+    qxl->io = pci_device_open_io(qxl->pci,
+                                qxl->pci->regions[3].base_addr,
+                                qxl->pci->regions[3].size);
     qxl->io_base = qxl->pci->regions[3].base_addr;
 #else
     qxl->ram = xf86MapPciMem (scrnIndex, VIDMEM_FRAMEBUFFER,
@@ -525,7 +530,6 @@ qxl_create_primary(qxl_screen_t *qxl)
 Bool
 qxl_resize_primary_to_virtual (qxl_screen_t *qxl)
 {
-    ScreenPtr pScreen;
     long new_surface0_size;
 
     if ((qxl->primary_mode.x_res == qxl->virtual_x &&
@@ -561,9 +565,9 @@ qxl_resize_primary_to_virtual (qxl_screen_t *qxl)
     qxl->primary = qxl_create_primary(qxl);
     qxl->bytes_per_pixel = (qxl->pScrn->bitsPerPixel + 7) / 8;
     
-    pScreen = qxl->pScrn->pScreen;
-    if (pScreen)
+    if (qxl->screen_resources_created)
     {
+        ScreenPtr pScreen = qxl->pScrn->pScreen;
 	PixmapPtr root = pScreen->GetScreenPixmap (pScreen);
 
         if (qxl->deferred_fps <= 0)
@@ -640,6 +644,7 @@ qxl_create_screen_resources (ScreenPtr pScreen)
     qxl_create_desired_modes (qxl);
     qxl_update_edid (qxl);
     
+    qxl->screen_resources_created = TRUE;
     return TRUE;
 }
 
@@ -757,11 +762,6 @@ qxl_screen_init (SCREEN_INIT_ARGS_DECL)
 	    visual->blueMask = pScrn->mask.blue;
 	}
     }
-    
-#ifndef XSPICE
-    qxl->io_pages = (void *)((unsigned long)qxl->ram);
-    qxl->io_pages_physical = (void *)((unsigned long)qxl->ram_physical);
-#endif
     
     qxl->command_ring = qxl_ring_create ((struct qxl_ring_header *)&(ram_header->cmd_ring),
                                          sizeof (struct QXLCommand),

@@ -173,6 +173,9 @@ void xspice_set_spice_server_options(OptionInfoPtr options)
     const char *streaming_video =
         get_str_option(options, OPTION_SPICE_STREAMING_VIDEO,
                        "XSPICE_STREAMING_VIDEO");
+    const char *video_codecs =
+        get_str_option(options, OPTION_SPICE_VIDEO_CODECS,
+                       "XSPICE_VIDEO_CODECS");
     int agent_mouse =
         get_bool_option(options, OPTION_SPICE_AGENT_MOUSE,
                         "XSPICE_AGENT_MOUSE");
@@ -187,7 +190,6 @@ void xspice_set_spice_server_options(OptionInfoPtr options)
         exit(1);
     }
     printf("xspice: port = %d, tls_port = %d\n", port, tls_port);
-    spice_server_set_port(spice_server, port);
     if (disable_ticketing) {
         spice_server_set_noauth(spice_server);
     }
@@ -295,10 +297,20 @@ void xspice_set_spice_server_options(OptionInfoPtr options)
         spice_server_set_streaming_video(spice_server, streaming_video_opt);
     }
 
-    spice_server_set_agent_mouse
-        (spice_server, agent_mouse);
-    spice_server_set_playback_compression
-        (spice_server, playback_compression);
+    if (video_codecs) {
+#if SPICE_SERVER_VERSION >= 0x000d02 /* 0.13.2 */
+        if (spice_server_set_video_codecs(spice_server, video_codecs)) {
+            fprintf(stderr, "spice: invalid video encoder %s\n", video_codecs);
+            exit(1);
+        }
+#else
+        fprintf(stderr, "spice: video_codecs are not available (spice >= 0.13.2 required)\n");
+        exit(1);
+#endif
+    }
+
+    spice_server_set_agent_mouse(spice_server, agent_mouse);
+    spice_server_set_playback_compression(spice_server, playback_compression);
 
     free(x509_key_file);
     free(x509_cert_file);
