@@ -9,11 +9,13 @@ xserver-xorg-video-qxl (0.1.4+20161126git4d7160c-1) UNRELEASED; urgency=medium
   * debian/control: Bump Standards-Version to 3.9.8, no further changes
   * debian/control: Add dh-python to the build-dependencies
   * debian/control: Explicitly build-depend against libxfont-dev
+  * Drop debian/patches/xextproto.diff and build-depend against libxext-dev
+    instead
 
   [ Andreas Boll ]
   * Update a bunch of URLs in packaging to https.
 
- -- Laurent Bigonville <bigon@debian.org>  Sat, 26 Nov 2016 14:34:03 +0100
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 26 Nov 2016 14:46:57 +0100
 
 xserver-xorg-video-qxl (0.1.4-3) unstable; urgency=medium
 
