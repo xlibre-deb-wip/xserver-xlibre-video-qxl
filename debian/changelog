@@ -11,11 +11,12 @@ xserver-xorg-video-qxl (0.1.4+20161126git4d7160c-1) UNRELEASED; urgency=medium
   * debian/control: Explicitly build-depend against libxfont-dev
   * Drop debian/patches/xextproto.diff and build-depend against libxext-dev
     instead
+  * Disable Xspice again, it's not working with XOrg 1.19 release
 
   [ Andreas Boll ]
   * Update a bunch of URLs in packaging to https.
 
- -- Laurent Bigonville <bigon@debian.org>  Sat, 26 Nov 2016 14:46:57 +0100
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 26 Nov 2016 16:33:45 +0100
 
 xserver-xorg-video-qxl (0.1.4-3) unstable; urgency=medium
 
