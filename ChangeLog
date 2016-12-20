@@ -1,3 +1,120 @@
+commit 8d344cf49fdb021ab80354eaaa57a419a6746a56
+Author: Christophe Fergeau <cfergeau@redhat.com>
+Date:   Mon Dec 19 17:36:36 2016 +0100
+
+    NEWS: Xspice now works with X.org 1.19
+
+commit a283cda0c4dbacb1d4b398b45f271275a3d1121a
+Author: Christophe Fergeau <cfergeau@redhat.com>
+Date:   Mon Dec 19 17:28:41 2016 +0100
+
+    Revert "Remove unused 'event_mask' field"
+    
+    This reverts commit bfb724076d575d5a49d08913b86885688251a176.
+    This was pushed by mistake.
+
+commit bfb724076d575d5a49d08913b86885688251a176
+Author: Christophe Fergeau <cfergeau@redhat.com>
+Date:   Mon Dec 19 10:51:09 2016 +0100
+
+    Remove unused 'event_mask' field
+    
+    With the Xorg 1.19 codepaths, the 'event_mask' field of SpiceWatch is
+    only useful for sanity checking the event we get from Xorg. This commit
+    assumes Xorg is sane, and removes this extra field.
+
+commit 009776a8a3fb096b11ec95033d1e1a366e26f188
+Author: Christophe Fergeau <cfergeau@redhat.com>
+Date:   Thu Dec 15 10:47:51 2016 +0100
+
+    Xspice: Replace malloc/strdup use with xnfalloc/xnfstrdup
+    
+    spiceqxl_*.c files are Xspice-only code. They contain a few uses of
+    malloc/strdup, and none of these are checked for failure. It's better to
+    replace these with xfnalloc/xnfstrdup which are provided by the X server
+    and cannot fail (aborts on failure).
+    
+    Signed-off-by: Christophe Fergeau <cfergeau@redhat.com>
+    Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+commit db353f559d32119e811eab71a9d3128847a64609
+Author: Christophe Fergeau <cfergeau@redhat.com>
+Date:   Wed Dec 14 10:37:03 2016 +0100
+
+    xspice: Adjust to X.org 1.19 changes
+    
+    In newer X.org versions, it's no longer supported to modify the set of
+    FDs passed to a BlockHandler method to get notified when the FD has data
+    to be read. This was limited anyway as we could only get read events
+    this way, and had to do our own polling to get notified about socket
+    writeability.
+    
+    Starting from xserver 1.19, the supported way of doing this is to use
+    the SetNotifyFd/RemoveNotifyFd API, which is actually a much better way
+    as it matches very well the 'watch' API spice-server expects Xspice to
+    implement.
+    
+    This commit switches to that new API, which removes the need for
+    RegisterBlockAndWakeupHandlers().
+    
+    Signed-off-by: Christophe Fergeau <cfergeau@redhat.com>
+    Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+    Acked-by: Uri Lublin <uril@redhat.com>
+
+commit 13d4afc1ba55eaed3e7ed4da8c948d3f334598d3
+Author: Christophe Fergeau <cfergeau@redhat.com>
+Date:   Thu Apr 14 18:05:59 2016 +0200
+
+    build-sys: Update for 0.1.5 release
+
+commit ce00ab5df8cee45b0dc029973d6eeb937547144d
+Author: Francois Gouget <fgouget@codeweavers.com>
+Date:   Thu Dec 8 09:15:55 2016 +0100
+
+    spiceqxl: Improve the Xspice and Xorg configuration option descriptions
+    
+    Group the options more logically and improve their descriptions.
+    Add the missing help strings for Xspice --help and standardize the
+    messages to start with a lowercase and not end with a period.
+    In the Xorg configuration, always show the default in the
+    commented-out sample.
+    
+    Signed-off-by: Francois Gouget <fgouget@codeweavers.com>
+    Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+commit 7657ffb8a5cba20f221c2af93e0c83b81356053c
+Author: Christophe Fergeau <cfergeau@redhat.com>
+Date:   Fri Oct 28 11:56:47 2016 +0200
+
+    build: Error out when enabling xspice with X.Org 1.19
+    
+    xspice needs to be updated to cope with some X.Org 1.19 API changes,
+    better to make that explicit at configure time rather than letting
+    people discover the hard way (it builds with warnings but will not work)
+    that it's broken.
+
+commit 4783c5439552a461516a6d917765000a9b60c295
+Author: Christophe Fergeau <cfergeau@redhat.com>
+Date:   Fri Oct 28 10:54:55 2016 +0200
+
+    Fix "calles" typo in comment
+
+commit 4fbe63601d5806814b9bcaef07349759a4b0834d
+Author: Dave Airlie <airlied@redhat.com>
+Date:   Fri Aug 5 16:58:04 2016 +0200
+
+    Disable composite/a8 surfaces for KMS
+    
+    This should help with bug #974198
+
+commit 0daf59bd23b8b92b69a28b7bb1fa5961a8e86d97
+Author: Dave Airlie <airlied@redhat.com>
+Date:   Fri Aug 5 16:55:31 2016 +0200
+
+    Disable surfaces when KMS is used
+    
+    This is not working properly at the moment.
+
 commit 4d7160c49614c9132e7b7ae4ccfda952daffeefb
 Author: Francois Gouget <fgouget@codeweavers.com>
 Date:   Fri Oct 28 16:50:18 2016 +0200
