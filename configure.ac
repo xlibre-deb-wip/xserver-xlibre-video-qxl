@@ -23,7 +23,7 @@
 # Initialize Autoconf
 AC_PREREQ([2.60])
 AC_INIT([xf86-video-qxl],
-        [0.1.4],
+        [0.1.5],
         [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
         [xf86-video-qxl])
 AC_CONFIG_SRCDIR([Makefile.am])
@@ -68,7 +68,6 @@ PKG_CHECK_EXISTS(xfont2,
 
 # Obtain compiler/linker options for the driver dependencies
 PKG_CHECK_MODULES(XORG, [xorg-server >= 1.0.99.901] xproto fontsproto $xfont_pc $REQUIRED_MODULES)
-
 
 save_CFLAGS="$CFLAGS"
 CFLAGS="$XORG_CFLAGS"
@@ -139,7 +138,7 @@ if test "x$enable_xspice" = "xyes"; then
         AC_SUBST(SPICE_CFLAGS)
         AC_SUBST(SPICE_LIBS)
     ],
-)
+    )
 else
     enable_xspice=no
 fi
