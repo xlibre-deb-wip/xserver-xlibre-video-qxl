@@ -1,3 +1,11 @@
+xserver-xorg-video-qxl (0.1.5-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+    - Drop debian/patches/no-surfaces-kms.patch and
+      debian/patches/qxl-kms-disable-composite.patch, applied upstream
+
+ -- Laurent Bigonville <bigon@debian.org>  Tue, 20 Dec 2016 10:09:00 +0100
+
 xserver-xorg-video-qxl (0.1.4+20161126git4d7160c-1) unstable; urgency=medium
 
   * Team upload.
