@@ -1,3 +1,10 @@
+xserver-xorg-video-qxl (0.1.5-2) unstable; urgency=medium
+
+  * Team upload.
+  * Update the debian/copyright file and use dep5
+
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 24 Dec 2016 01:27:13 +0100
+
 xserver-xorg-video-qxl (0.1.5-1) unstable; urgency=medium
 
   * Team upload.
