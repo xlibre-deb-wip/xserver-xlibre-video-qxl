@@ -25,7 +25,7 @@ Build-Depends:
  libspice-server-dev [amd64],
  libxext-dev,
  libxfont-dev,
- python,
+ python:any,
 Standards-Version: 3.9.8
 Homepage: https://www.spice-space.org/
 Vcs-Git: https://anonscm.debian.org/git/pkg-xorg/driver/xserver-xorg-video-qxl.git
