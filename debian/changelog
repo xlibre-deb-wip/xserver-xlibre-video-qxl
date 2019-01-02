@@ -2,11 +2,12 @@ xserver-xorg-video-qxl (0.1.5-3) UNRELEASED; urgency=medium
 
   [ Laurent Bigonville ]
   * debian/watch: Track .bz2 files instead of the .gz ones
+  * debian/control: Update Vcs-* fields
 
   [ Helmut Grohne ]
   * Annotate python build dependency with :any. (Closes: #892954)
 
- -- Helmut Grohne <helmut@subdivi.de>  Wed, 02 Jan 2019 09:42:19 +0100
+ -- Laurent Bigonville <bigon@debian.org>  Wed, 02 Jan 2019 09:47:03 +0100
 
 xserver-xorg-video-qxl (0.1.5-2) unstable; urgency=medium
 
