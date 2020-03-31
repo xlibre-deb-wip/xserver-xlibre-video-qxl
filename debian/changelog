@@ -15,6 +15,7 @@ xserver-xorg-video-qxl (0.1.5+git20200331-1) UNRELEASED; urgency=medium
   * python3.diff: Fix shebangs etc for python3.
   * Drop generated upstrean changelog, it wasn't shipped anyway.
   * docs: Updated.
+  * control: Bump policy to 4.5.0.
 
  -- Laurent Bigonville <bigon@debian.org>  Wed, 02 Jan 2019 09:47:03 +0100
 
