@@ -40,4 +40,4 @@ else
 endif
 
 %:
-	dh $@ --with quilt,xsf,python2 --builddirectory=build/
+	dh $@ --with quilt,xsf,python3 --builddirectory=build/
