@@ -7,6 +7,9 @@ xserver-xorg-video-qxl (0.1.5-3) UNRELEASED; urgency=medium
   [ Helmut Grohne ]
   * Annotate python build dependency with :any. (Closes: #892954)
 
+  [ Timo Aaltonen ]
+  * control: Migrate to x11proto-dev.
+
  -- Laurent Bigonville <bigon@debian.org>  Wed, 02 Jan 2019 09:47:03 +0100
 
 xserver-xorg-video-qxl (0.1.5-2) unstable; urgency=medium
