@@ -18,7 +18,10 @@ override_dh_install:
 	find debian/tmp -name '*.la' -delete
 	-rm -r debian/tmp/usr/share
 	install -D -m 644 -o root -g root ./examples/spiceqxl.xorg.conf.example debian/tmp/etc/X11/spiceqxl.xorg.conf
-	dh_install --fail-missing
+	dh_install
+
+override_dh_missing:
+	dh_missing --fail-missing
 
 # That's a plugin, use appropriate warning level:
 override_dh_shlibdeps:
@@ -37,4 +40,4 @@ else
 endif
 
 %:
-	dh $@ --with quilt,autoreconf,xsf,python2 --builddirectory=build/
+	dh $@ --with quilt,xsf,python2 --builddirectory=build/

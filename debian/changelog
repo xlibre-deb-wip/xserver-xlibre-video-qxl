@@ -9,6 +9,7 @@ xserver-xorg-video-qxl (0.1.5-3) UNRELEASED; urgency=medium
 
   [ Timo Aaltonen ]
   * control: Migrate to x11proto-dev.
+  * control: Migrate to debhelper-compat, bump to 12.
 
  -- Laurent Bigonville <bigon@debian.org>  Wed, 02 Jan 2019 09:47:03 +0100
 
