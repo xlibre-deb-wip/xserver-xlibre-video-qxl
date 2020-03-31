@@ -1,4 +1,4 @@
-xserver-xorg-video-qxl (0.1.5-3) UNRELEASED; urgency=medium
+xserver-xorg-video-qxl (0.1.5+git20200331-1) UNRELEASED; urgency=medium
 
   [ Laurent Bigonville ]
   * debian/watch: Track .bz2 files instead of the .gz ones
@@ -8,6 +8,7 @@ xserver-xorg-video-qxl (0.1.5-3) UNRELEASED; urgency=medium
   * Annotate python build dependency with :any. (Closes: #892954)
 
   [ Timo Aaltonen ]
+  * New upstream release.
   * control: Migrate to x11proto-dev.
   * control: Migrate to debhelper-compat, bump to 12.
   * Build with python3.
