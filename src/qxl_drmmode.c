@@ -36,13 +36,7 @@
 #include "qxl_drmmode.h"
 #include "X11/Xatom.h"
 #include "xf86DDC.h"
-/* DPMS */
-#ifdef HAVE_XEXTPROTO_71
 #include <X11/extensions/dpmsconst.h>
-#else
-#define DPMS_SERVER
-#include <X11/extensions/dpms.h>
-#endif
 #include <cursorstr.h>
 
 #include "qxl.h"
@@ -622,7 +616,8 @@ drmmode_output_set_property(xf86OutputPtr output, Atom property,
 	    if (value->type != XA_ATOM || value->format != 32 || value->size != 1)
 		return FALSE;
 	    memcpy(&atom, value->data, 4);
-	    name = NameForAtom(atom);
+	    if (!(name = NameForAtom(atom)))
+                return FALSE;
 
 	    /* search for matching name string, then set its value down */
 	    for (j = 0; j < p->mode_prop->count_enums; j++) {
@@ -719,22 +714,25 @@ static int subpixel_conv_table[7] = { 0, SubPixelUnknown,
 				      SubPixelVerticalBGR,
 				      SubPixelNone };
 
-const char *output_names[] = { "None",
-			       "VGA",
-			       "DVI",
-			       "DVI",
-			       "DVI",
-			       "Composite",
-			       "S-video",
-			       "LVDS",
-			       "CTV",
-			       "DIN",
-			       "DisplayPort",
-			       "HDMI",
-			       "HDMI",
-			       "TV",
-			       "eDP",
-			       "Virtual"
+const char *output_names[] = {
+    "None",
+    "VGA",
+    "DVI-I",
+    "DVI-D",
+    "DVI-A",
+    "Composite",
+    "SVIDEO",
+    "LVDS",
+    "Component",
+    "DIN",
+    "DP",
+    "HDMI",
+    "HDMI-B",
+    "TV",
+    "eDP",
+    "Virtual",
+    "DSI",
+    "DPI",
 };
 
 static void
@@ -764,8 +762,7 @@ drmmode_output_init(ScrnInfoPtr pScrn, drmmode_ptr drmmode, int num)
 		}
 	}
 
-	/* need to do smart conversion here for compat with non-kms ATI driver */
-	snprintf(name, 32, "%s-%d", output_names[koutput->connector_type], koutput->connector_type_id - 1);
+	snprintf(name, 32, "%s-%d", output_names[koutput->connector_type], koutput->connector_type_id);
 	
 
 	output = xf86OutputCreate (pScrn, &drmmode_output_funcs, name);
@@ -937,6 +934,9 @@ Bool drmmode_pre_init(ScrnInfoPtr pScrn, drmmode_ptr drmmode, int cpp)
 	for (i = 0; i < drmmode->mode_res->count_connectors; i++)
 	    drmmode_output_init(pScrn, drmmode, i);
 
+#if XF86_CRTC_VERSION >= 5
+	xf86ProviderSetup(pScrn, NULL, "qxl");
+#endif
 	xf86InitialConfiguration(pScrn, TRUE);
 
 	return TRUE;

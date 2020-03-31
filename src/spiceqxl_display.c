@@ -72,7 +72,7 @@
  * We currently add it during attache_worker - should not be called more
  * then once during lifetime (but we don't check)
  */
-QXLDevMemSlot slot = {
+static QXLDevMemSlot slot = {
 .slot_group_id = MEMSLOT_GROUP,
 .slot_id = 0,
 .generation = 0,
@@ -163,7 +163,7 @@ static int interface_get_command(QXLInstance *sin, struct QXLCommandExt *ext)
         qxl_send_events(qxl, QXL_INTERRUPT_DISPLAY);
     }
     qxl->guest_primary.commands++;
-    // TODO: reenable, useful
+    // TODO: re-enable, useful
     //qxl_track_command(qxl, ext);
     //qxl_log_command(qxl, "cmd", ext);
     return TRUE;
