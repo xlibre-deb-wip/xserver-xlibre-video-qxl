@@ -1,4 +1,4 @@
-xserver-xorg-video-qxl (0.1.5+git20200331-1) UNRELEASED; urgency=medium
+xserver-xorg-video-qxl (0.1.5+git20200331-1) unstable; urgency=medium
 
   [ Laurent Bigonville ]
   * debian/watch: Track .bz2 files instead of the .gz ones
@@ -11,13 +11,13 @@ xserver-xorg-video-qxl (0.1.5+git20200331-1) UNRELEASED; urgency=medium
   * New upstream release.
   * control: Migrate to x11proto-dev.
   * control: Migrate to debhelper-compat, bump to 12.
-  * Build with python3.
+  * Build with python3. (Closes: #938856)
   * python3.diff: Fix shebangs etc for python3.
   * Drop generated upstrean changelog, it wasn't shipped anyway.
   * docs: Updated.
   * control: Bump policy to 4.5.0.
 
- -- Laurent Bigonville <bigon@debian.org>  Wed, 02 Jan 2019 09:47:03 +0100
+ -- Timo Aaltonen <tjaalton@debian.org>  Tue, 31 Mar 2020 12:03:15 +0300
 
 xserver-xorg-video-qxl (0.1.5-2) unstable; urgency=medium
 
