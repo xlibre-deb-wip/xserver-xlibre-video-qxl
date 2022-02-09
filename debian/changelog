@@ -1,6 +1,6 @@
 xserver-xorg-video-qxl (0.1.5+git20200331-2) UNRELEASED; urgency=medium
 
-  * Fix build against xserver 21.1.
+  * Fix build against xserver 21.1. (Closes: #1002143)
   * control: Bump debhelper-compat to 13, policy to 4.6.0.
   * watch: Update upstream git url.
 
