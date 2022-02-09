@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
 Build-Depends:
- debhelper-compat (= 12),
+ debhelper-compat (= 13),
  pkg-config,
  dh-python,
  xserver-xorg-dev (>= 2:1.9.4),
@@ -17,7 +17,7 @@ Build-Depends:
  libxext-dev,
  libxfont-dev,
  python3:any,
-Standards-Version: 4.5.0
+Standards-Version: 4.6.0
 Homepage: https://www.spice-space.org/
 Vcs-Git: https://salsa.debian.org/xorg-team/driver/xserver-xorg-video-qxl.git
 Vcs-Browser: https://salsa.debian.org/xorg-team/driver/xserver-xorg-video-qxl
