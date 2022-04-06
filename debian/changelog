@@ -1,9 +1,9 @@
-xserver-xorg-video-qxl (0.1.5+git20200331-3) UNRELEASED; urgency=medium
+xserver-xorg-video-qxl (0.1.5+git20200331-3) unstable; urgency=medium
 
   * configure-Simplify-fragile-libdrm-detection.patch: Fix detecting
     qxl_drm.h. (LP: #1967901)
 
- -- Timo Aaltonen <tjaalton@debian.org>  Wed, 06 Apr 2022 10:21:10 +0300
+ -- Timo Aaltonen <tjaalton@debian.org>  Wed, 06 Apr 2022 10:23:41 +0300
 
 xserver-xorg-video-qxl (0.1.5+git20200331-2) unstable; urgency=medium
 
