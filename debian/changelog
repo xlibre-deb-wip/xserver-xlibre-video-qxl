@@ -7,6 +7,12 @@ xserver-xorg-video-qxl (0.1.6-1) unstable; urgency=medium
 
  -- Timo Aaltonen <tjaalton@debian.org>  Wed, 21 Jun 2023 08:58:45 +0300
 
+xserver-xorg-video-qxl (0.1.5+git20200331-4) UNRELEASED; urgency=medium
+
+  * Trim trailing whitespace.
+
+ -- Debian Janitor <janitor@jelmer.uk>  Thu, 20 Oct 2022 05:48:29 -0000
+
 xserver-xorg-video-qxl (0.1.5+git20200331-3) unstable; urgency=medium
 
   * configure-Simplify-fragile-libdrm-detection.patch: Fix detecting
@@ -154,7 +160,7 @@ xserver-xorg-video-qxl (0.1.0-1) experimental; urgency=low
 
   [ Timo Aaltonen ]
   * control: Bump build-dep on libspice-protocol-dev to >= 0.12.2~.
-  
+
   [ Liang Guo ]
   * Ignore automatically generated files when build packages.
 
@@ -173,7 +179,7 @@ xserver-xorg-video-qxl (0.0.17-1) unstable; urgency=low
   * New upstream release.
   * debian/copyright:
     - Remove src/lookup3.c, removed upstream.
-    - Add src/murmurhash3.{c,h}, new file. 
+    - Add src/murmurhash3.{c,h}, new file.
   * debian/source/options:
     - Ignore ChangeLog, included in upstream tarbar, but not in git.
   * Remove translate-the-access-region.patch, applied upstream.
@@ -219,7 +225,7 @@ xserver-xorg-video-qxl (0.0.13-1) unstable; urgency=low
   * Switch to dh:
     - Use debhelper 8.
     - Use dh-autoreconf.
-  * Remove fix_qxl_driver_assert.patch, already in upstream. 
+  * Remove fix_qxl_driver_assert.patch, already in upstream.
   * Bump Standards-Version to 3.9.1, no changes needed.
   * Add quilt build-dep.
   * Add HomePage control field.
@@ -229,6 +235,6 @@ xserver-xorg-video-qxl (0.0.13-1) unstable; urgency=low
 
 xserver-xorg-video-qxl (0.0.12-1) unstable; urgency=low
 
-  * Initial release (Closes: #576642)  
+  * Initial release (Closes: #576642)
 
  -- Liang Guo <bluestonechina@gmail.com>  Thu, 20 May 2010 16:44:11 +0800
