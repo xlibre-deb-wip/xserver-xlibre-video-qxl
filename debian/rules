@@ -6,9 +6,6 @@ VIDEODEP = $(shell cat /usr/share/xserver-xorg/videodrvdep 2>/dev/null)
 override_dh_auto_build:
 	dh_auto_build -- V=1
 
-override_dh_strip:
-	dh_strip --dbgsym-migration='xserver-xorg-video-qxl-dbg (<< 0.1.4+20161126git4d7160c)'
-
 # Install in debian/tmp to retain control through dh_install:
 override_dh_auto_install:
 	dh_auto_install --destdir=debian/tmp

@@ -10,6 +10,7 @@ xserver-xorg-video-qxl (0.1.6-1) unstable; urgency=medium
 xserver-xorg-video-qxl (0.1.5+git20200331-4) UNRELEASED; urgency=medium
 
   * Trim trailing whitespace.
+  * Drop transition for old debug package migration.
 
  -- Debian Janitor <janitor@jelmer.uk>  Thu, 20 Oct 2022 05:48:29 -0000
 
