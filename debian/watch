@@ -1,4 +1,4 @@
 #git=https://gitlab.freedesktop.org/xorg/driver/xf86-video-qxl
 version=3
 opts="pgpsigurlmangle=s/$/.sig/" \
-https://xorg.freedesktop.org/releases/individual/driver/ xf86-video-qxl-(.*)\.tar\.bz2
+https://xorg.freedesktop.org/releases/individual/driver/ xf86-video-qxl-(.*)\.tar\.xz
