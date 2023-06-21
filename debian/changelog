@@ -1,6 +1,7 @@
 xserver-xorg-video-qxl (0.1.6-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+  * patches: Drop obsolete patches. (Closes: #1038648)
 
  -- Timo Aaltonen <tjaalton@debian.org>  Wed, 21 Jun 2023 08:46:59 +0300
 
