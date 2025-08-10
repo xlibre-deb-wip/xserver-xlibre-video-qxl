@@ -83,19 +83,11 @@ struct uxa_glyph {
 	uint16_t size, pos;
 };
 
-#if HAS_DEVPRIVATEKEYREC
 static DevPrivateKeyRec uxa_glyph_key;
-#else
-static int uxa_glyph_key;
-#endif
 
 static inline struct uxa_glyph *uxa_glyph_get_private(GlyphPtr glyph)
 {
-#if HAS_DEVPRIVATEKEYREC
 	return dixGetPrivate(&glyph->devPrivates, &uxa_glyph_key);
-#else
-	return dixLookupPrivate(&glyph->devPrivates, &uxa_glyph_key);
-#endif
 }
 
 static inline void uxa_glyph_set_private(GlyphPtr glyph, struct uxa_glyph *priv)
@@ -172,7 +164,7 @@ static Bool uxa_realize_glyph_caches(ScreenPtr pScreen)
 					CPComponentAlpha, &component_alpha,
 					serverClient, &error);
 
-		pScreen->DestroyPixmap(pixmap);
+		dixDestroyPixmap(pixmap, 0);
 
 		if (!picture)
 			goto bail;
@@ -198,13 +190,8 @@ bail:
 
 Bool uxa_glyphs_init(ScreenPtr pScreen)
 {
-#if HAS_DIXREGISTERPRIVATEKEY
 	if (!dixRegisterPrivateKey(&uxa_glyph_key, PRIVATE_GLYPH, 0))
 		return FALSE;
-#else
-	if (!dixRequestPrivate(&uxa_glyph_key, 0))
-		return FALSE;
-#endif
 
 	if (!uxa_realize_glyph_caches(pScreen))
 		return FALSE;
@@ -281,7 +268,7 @@ uxa_glyph_cache_upload_glyph(ScreenPtr screen,
 		      x, y);
 
 	if (scratch != pGlyphPixmap)
-		screen->DestroyPixmap(scratch);
+		dixDestroyPixmap(scratch, 0);
 
 	FreeScratchGC(gc);
 }
@@ -933,7 +920,7 @@ uxa_glyphs_via_mask(CARD8 op,
 	uxa_clear_pixmap(screen, uxa_screen, pixmap);
 
 	if (!uxa_pixmap_is_offscreen(pixmap)) {
-		screen->DestroyPixmap(pixmap);
+		dixDestroyPixmap(pixmap, 0);
 		return 1;
 	}
 	
@@ -941,7 +928,7 @@ uxa_glyphs_via_mask(CARD8 op,
 	mask = CreatePicture(0, &pixmap->drawable,
 			      maskFormat, CPComponentAlpha,
 			      &component_alpha, serverClient, &error);
-	screen->DestroyPixmap(pixmap);
+	dixDestroyPixmap(pixmap, 0);
 
 	if (!mask)
 		return 1;
@@ -1132,7 +1119,7 @@ fallback:
 
 		gc = GetScratchGC(depth, screen);
 		if (!gc) {
-			screen->DestroyPixmap(pixmap);
+			dixDestroyPixmap(pixmap, 0);
 			return;
 		}
 
@@ -1146,7 +1133,7 @@ fallback:
 		localDst = CreatePicture(0, &pixmap->drawable,
 					 PictureMatchFormat(screen, depth, pDst->format),
 					 0, 0, serverClient, &error);
-		screen->DestroyPixmap(pixmap);
+		dixDestroyPixmap(pixmap, 0);
 
 		if (!localDst)
 			return;

@@ -34,6 +34,7 @@ AM_INIT_AUTOMAKE([foreign dist-xz])
 AM_MAINTAINER_MODE
 AC_CONFIG_HEADERS([config.h])
 AC_SYS_LARGEFILE
+AC_USE_SYSTEM_EXTENSIONS
 
 # Require xorg-macros: XORG_DEFAULT_OPTIONS
 m4_ifndef([XORG_MACROS_VERSION],
@@ -67,7 +68,7 @@ PKG_CHECK_EXISTS(xfont2,
                  [xfont_pc=xfont])
 
 # Obtain compiler/linker options for the driver dependencies
-PKG_CHECK_MODULES(XORG, [xorg-server >= 1.0.99.901] xproto fontsproto $xfont_pc $REQUIRED_MODULES)
+PKG_CHECK_MODULES(XORG, [xorg-server >= 1.18] xproto fontsproto $xfont_pc $REQUIRED_MODULES)
 
 save_CFLAGS="$CFLAGS"
 CFLAGS="$XORG_CFLAGS"
