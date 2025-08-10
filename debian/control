@@ -28,15 +28,15 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, ${xviddriver:Depends}
 Provides:
  xserver-xorg-video-qxl,
  ${xviddriver:Provides}
-Description: X.Org X server -- QXL display driver
+Description: XLibre X server -- QXL display driver
  This package provides the driver for QXL video device, i.e. if Linux is
  running inside a RedHat Enterprise Virtualization (RHEV) environment, or
  other SPICE-compatible KVM/Qemu emulator.
  .
- More information about X.Org can be found at:
- <URL:https://www.X.org>
+ More information about XLibre can be found at:
+ <URL:https://github.com/X11Libre/xserver>
  .
- This package is built from the X.org xf86-video-qxl driver module.
+ This package is built from the XLibre xf86-video-qxl driver module.
 Conflicts:
  xserver-xorg-video-qxl,
 
@@ -52,7 +52,7 @@ Breaks: xserver-xorg-video-qxl (<< 0.1.4-2~)
 Replaces: xserver-xorg-video-qxl (<< 0.1.4-2~)
 Description: Xspice X server
  Xspice is an X server and Spice server in one. It consists of a wrapper script
- for executing Xorg with the right parameters and environment variables, a
+ for executing XLibre with the right parameters and environment variables, a
  module names spiceqxl_drv.so implementing three drivers: a video mostly
  identical code to the guest qxl X driver, and keyboard and mouse reading from
  the spice inputs channel.
