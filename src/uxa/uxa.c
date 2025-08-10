@@ -37,11 +37,7 @@
 #include "uxa-priv.h"
 #include "uxa.h"
 
-#if HAS_DEVPRIVATEKEYREC
 DevPrivateKeyRec uxa_screen_index;
-#else
-int uxa_screen_index;
-#endif
 
 /**
  * uxa_get_drawable_pixmap() returns a backing pixmap for a given drawable.
@@ -211,7 +207,7 @@ uxa_validate_gc(GCPtr pGC, unsigned long changes, DrawablePtr pDrawable)
 	 */
 #ifdef FB_24_32BIT
 	if ((changes & GCTile) && fbGetRotatedPixmap(pGC)) {
-		(*pGC->pScreen->DestroyPixmap) (fbGetRotatedPixmap(pGC));
+		dixDestroyPixmap(fbGetRotatedPixmap(pGC), 0);
 		fbGetRotatedPixmap(pGC) = 0;
 	}
 
@@ -225,8 +221,7 @@ uxa_validate_gc(GCPtr pGC, unsigned long changes, DrawablePtr pDrawable)
 			    pNewTile->drawable.bitsPerPixel !=
 			    pDrawable->bitsPerPixel) {
 				if (pNewTile)
-					(*pGC->pScreen->
-					 DestroyPixmap) (pNewTile);
+				    dixDestroyPixmap(pNewTile, 0);
 				/* fb24_32ReformatTile will do direct access
 				 * of a newly-allocated pixmap.  This isn't a
 				 * problem yet, since we don't put pixmaps in
@@ -425,7 +420,6 @@ static Bool uxa_close_screen(CLOSE_SCREEN_ARGS_DECL)
 	pScreen->GetImage = uxa_screen->SavedGetImage;
 	pScreen->GetSpans = uxa_screen->SavedGetSpans;
 	pScreen->CreatePixmap = uxa_screen->SavedCreatePixmap;
-	pScreen->DestroyPixmap = uxa_screen->SavedDestroyPixmap;
 	pScreen->CopyWindow = uxa_screen->SavedCopyWindow;
 	pScreen->ChangeWindowAttributes =
 	    uxa_screen->SavedChangeWindowAttributes;
@@ -506,10 +500,9 @@ Bool uxa_driver_init(ScreenPtr screen, uxa_driver_t * uxa_driver)
 			   "non-NULL\n", screen->myNum);
 		return FALSE;
 	}
-#if HAS_DIXREGISTERPRIVATEKEY
-        if (!dixRegisterPrivateKey(&uxa_screen_index, PRIVATE_SCREEN, 0))
-            return FALSE;
-#endif
+
+	if (!dixRegisterPrivateKey(&uxa_screen_index, PRIVATE_SCREEN, 0))
+		return FALSE;
 	uxa_screen = calloc(sizeof(uxa_screen_t), 1);
 
 	if (!uxa_screen) {
@@ -529,8 +522,6 @@ Bool uxa_driver_init(ScreenPtr screen, uxa_driver_t * uxa_driver)
 	uxa_screen->solid_clear = 0;
 	uxa_screen->solid_black = 0;
 	uxa_screen->solid_white = 0;
-
-//    exaDDXDriverInit(screen);
 
 	/*
 	 * Replace various fb screen functions

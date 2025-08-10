@@ -168,9 +168,7 @@ drmmode_set_mode_major(xf86CrtcPtr crtc, DisplayModePtr mode,
 		crtc->x = x;
 		crtc->y = y;
 		crtc->rotation = rotation;
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,5,99,0,0)
 		crtc->transformPresent = FALSE;
-#endif
 	}
 
 	output_ids = calloc(sizeof(uint32_t), xf86_config->num_output);
@@ -192,11 +190,9 @@ drmmode_set_mode_major(xf86CrtcPtr crtc, DisplayModePtr mode,
 			output_count++;
 		}
 
-#if XORG_VERSION_CURRENT >= XORG_VERSION_NUMERIC(1,7,0,0,0)
 		crtc->funcs->gamma_set(crtc, crtc->gamma_red, crtc->gamma_green,
 				       crtc->gamma_blue, crtc->gamma_size);
-#endif
-		
+
 		drmmode_ConvertToKMode(crtc->scrn, &kmode, mode);
 
 		fb_id = drmmode->fb_id;
@@ -348,7 +344,7 @@ drmmode_crtc_init(ScrnInfoPtr pScrn, drmmode_ptr drmmode, int num)
 		return;
 	crtc->driverIsPerformingTransform = FALSE;
 
-	drmmode_crtc = xnfcalloc(sizeof(drmmode_crtc_private_rec), 1);
+	drmmode_crtc = XNFcallocarray(sizeof(drmmode_crtc_private_rec), 1);
 	drmmode_crtc->mode_crtc = drmModeGetCrtc(drmmode->fd, drmmode->mode_res->crtcs[num]);
 	drmmode_crtc->drmmode = drmmode;
 	crtc->driver_private = drmmode_crtc;
@@ -435,7 +431,7 @@ drmmode_output_get_modes(xf86OutputPtr output)
 
 	/* modes should already be available */
 	for (i = 0; i < koutput->count_modes; i++) {
-		Mode = xnfalloc(sizeof(DisplayModeRec));
+		Mode = XNFalloc(sizeof(DisplayModeRec));
 
 		drmmode_ConvertFromKMode(output->scrn, &koutput->modes[i], Mode);
 		Modes = xf86ModesAdd(Modes, Mode);
