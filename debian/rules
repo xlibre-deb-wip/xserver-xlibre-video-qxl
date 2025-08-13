@@ -25,7 +25,7 @@ override_dh_shlibdeps:
 	dh_shlibdeps -- --warnings=6
 
 override_dh_xsf_substvars:
-	echo "xviddriver:Depends=$(VIDEODEP)" >> debian/xserver-xspice.substvars
+	echo "xviddriver:Depends=$(VIDEODEP)" >> debian/xserver-xlibre-xspice.substvars
 	dh_xsf_substvars
 
 # Enable Xspice support
