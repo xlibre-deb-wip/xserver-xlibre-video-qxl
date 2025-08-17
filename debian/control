@@ -26,7 +26,7 @@ Package: xserver-xlibre-video-qxl
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${xviddriver:Depends}
 Provides:
- xserver-xorg-video-qxl,
+ xserver-xorg-video-qxl (= ${binary:Version}),
  ${xviddriver:Provides}
 Description: XLibre X server -- QXL display driver
  This package provides the driver for QXL video device, i.e. if Linux is
@@ -60,6 +60,6 @@ Description: Xspice X server
  Xspice allows regular X connections, while a spice client provides the keyboard
  and mouse and video output.
 Provides:
- xserver-xspice,
+ xserver-xspice (= ${binary:Version}),
 Conflicts:
  xserver-xspice,
