@@ -33,9 +33,9 @@ override_dh_xsf_substvars:
 # Enable Xspice support
 override_dh_auto_configure:
 ifeq ($(DEB_HOST_GNU_TYPE), x86_64-linux-gnu)
-	dh_auto_configure -- --libdir=/usr/lib --enable-xspice
+	dh_auto_configure -- --libdir=/usr/lib --enable-xspice --with-xorg-module-dir=/usr/lib/xorg/modules
 else
-	dh_auto_configure -- --libdir=/usr/lib
+	dh_auto_configure -- --libdir=/usr/lib --with-xorg-module-dir=/usr/lib/xorg/modules
 endif
 
 %:
